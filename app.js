@@ -59,7 +59,7 @@ function plot() {
   for (let tick = 0; tick <= 4; tick++) {
     const x = left + ((right - left) * tick) / 4;
     fragment.append(
-      svg('line', { x1: x, x2: x, y1: 25, y2: height - 20, stroke: '#edf1e8' }),
+      svg('line', { x1: x, x2: x, y1: 25, y2: height - 20, stroke: '#e8e6ee' }),
       svg('text', { x, y: 16, 'text-anchor': 'middle' }, format(min + ((max - min) * tick) / 4)),
     );
   }
@@ -73,7 +73,7 @@ function plot() {
       x2: r.unbounded ? right : px(r.upper),
       y1: y,
       y2: y,
-      stroke: '#acc19b',
+      stroke: '#afa2ca',
       'stroke-width': 3,
       'stroke-dasharray': r.unbounded ? '5 4' : 'none',
     });
@@ -88,14 +88,14 @@ function plot() {
         width: 6,
         height: 6,
         fill: '#fff',
-        stroke: '#61794f',
+        stroke: '#675187',
       }),
     );
     const truth = svg('circle', {
       cx: px(r.truth),
       cy: y,
       r: 3.7,
-      fill: r.covered ? '#566d45' : '#bf7950',
+      fill: r.covered ? '#675187' : '#ba684c',
     });
     truth.append(
       svg(
@@ -119,7 +119,7 @@ function coverageCurve() {
     y = (v) => 210 - v * 180;
   for (const value of [0, 0.25, 0.5, 0.75, 1])
     fragment.append(
-      svg('line', { x1: 45, x2: 420, y1: y(value), y2: y(value), stroke: '#dfe7d5' }),
+      svg('line', { x1: 45, x2: 420, y1: y(value), y2: y(value), stroke: '#e3dfea' }),
       svg('text', { x: 8, y: y(value) + 3 }, `${Math.round(value * 100)}%`),
     );
   for (const value of [0.5, 0.75, 1])
@@ -132,13 +132,13 @@ function coverageCurve() {
       y1: y(0.5),
       x2: x(1),
       y2: y(1),
-      stroke: '#b5bda8',
+      stroke: '#b7afc5',
       'stroke-dasharray': '5 4',
     }),
     svg('polyline', {
       points: curve.map((r) => `${x(r.target / 1000)},${y(r.coverage)}`).join(' '),
       fill: 'none',
-      stroke: '#758b5f',
+      stroke: '#7d659e',
       'stroke-width': 2,
     }),
   );
@@ -147,7 +147,7 @@ function coverageCurve() {
       cx: x(r.target / 1000),
       cy: y(r.coverage),
       r: 3,
-      fill: r.unbounded ? '#bf8b4f' : '#758b5f',
+      fill: r.unbounded ? '#ba684c' : '#7d659e',
     });
     dot.append(
       svg(

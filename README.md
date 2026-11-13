@@ -4,6 +4,8 @@ A local split-conformal regression workbench. Import held-out predictions, calib
 
 ![Interval Orchard](docs/workbench.png)
 
+The audit puts individual prediction intervals beside a compact coverage summary. Group and miss filters sit above the plot; the plot scrolls independently for long evaluation sets. **Group audit & coverage curve** expands the secondary comparisons. Calibration assumptions and unbounded-interval notices stay visible alongside the results.
+
 ## Run
 
 Requires Python 3.10+ to serve the app. No runtime packages or API keys.
