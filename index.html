@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Interval Orchard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="#">interval orchard<span>◌</span></a>
+      <p>UNCERTAINTY, MEASURED.</p>
+      <label class="file"
+        >Import predictions<input id="file" type="file" accept=".csv,.json"
+      /></label>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="eyebrow">MODEL EVALUATION / SPLIT CONFORMAL</p>
+        <h1>A prediction needs<br />room to be wrong.</h1>
+        <p>
+          Calibrate on one set. Audit on another.<br />See how much of the uncertainty your
+          intervals actually cover.
+        </p>
+      </section>
+      <div class="controls">
+        <label
+          >Dataset<select id="example">
+            <option value="mixed">Mixed noise levels</option>
+            <option value="shift">Evaluation distribution shift</option>
+            <option value="tiny">Too little calibration data</option>
+          </select></label
+        ><label
+          >Score<select id="mode">
+            <option value="absolute">Absolute residual</option>
+            <option value="scaled">Residual / predicted scale</option>
+          </select></label
+        ><label
+          >Target coverage / %<input
+            id="target"
+            type="number"
+            min="50"
+            max="99.9"
+            step="0.1"
+            value="90" /></label
+        ><button id="run" class="primary">Calibrate & audit →</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <section id="results" hidden>
+        <div class="metrics">
+          <div><span>Target coverage</span><strong id="nominal"></strong></div>
+          <div>
+            <span>Observed evaluation coverage</span><strong id="observed"></strong
+            ><small id="covered"></small>
+          </div>
+          <div>
+            <span>Mean interval width</span><strong id="width"></strong
+            ><small>in target units</small>
+          </div>
+        </div>
+        <div id="quantile" class="quantile"></div>
+        <p id="unbounded" class="notice" hidden></p>
+        <p class="assumption">
+          Coverage theory is marginal and requires exchangeable data with fixed predictions and
+          scales. It does not guarantee each group's coverage or protect against distribution shift.
+        </p>
+        <section>
+          <div class="section-head">
+            <h2>Individual outcomes</h2>
+            <div class="filters">
+              <label
+                >Group<select id="group">
+                  <option value="">All groups</option>
+                </select></label
+              ><label class="check"><input id="misses" type="checkbox" /> Misses only</label>
+            </div>
+          </div>
+          <div class="legend">
+            <span>— prediction interval</span><span>□ prediction</span><span>● observed truth</span
+            ><span class="miss-key">● missed truth</span>
+          </div>
+          <div class="plot-scroll">
+            <svg
+              id="intervals"
+              role="img"
+              aria-label="Prediction intervals and observed outcomes"
+            ></svg>
+          </div>
+          <p id="plot-count" class="hint"></p>
+        </section>
+        <div class="audit-grid">
+          <section>
+            <h2>Group coverage</h2>
+            <p class="hint">Descriptive audits, not group-conditional guarantees.</p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Group</th>
+                    <th>Covered / n</th>
+                    <th>Coverage</th>
+                    <th>Mean width</th>
+                  </tr>
+                </thead>
+                <tbody id="groups"></tbody>
+              </table>
+            </div>
+          </section>
+          <section>
+            <h2>Coverage across targets</h2>
+            <p class="hint">Keep final evaluation data untouched while choosing settings.</p>
+            <svg
+              id="curve"
+              viewBox="0 0 450 240"
+              role="img"
+              aria-label="Nominal versus observed coverage"
+            ></svg>
+            <p class="hint">Dashed: nominal coverage · solid: observed coverage</p>
+          </section>
+        </div>
+        <details>
+          <summary>Thresholds, assumptions & data format</summary>
+          <p id="formula"></p>
+          <p>
+            Use predictions from a model fixed before calibration. For scaled scores, positive scale
+            estimates must also be fixed independently of calibration outcomes. ID checks prevent
+            obvious overlap; they cannot verify how a model or dataset was produced.
+          </p>
+          <p>
+            CSV requires <code>id,split,truth,prediction</code>. Optional
+            <code>scale</code> defaults to 1 and <code>group</code> to “all”. Split values are
+            <code>calibration</code> or <code>evaluation</code>. JSON uses
+            <code>{"rows":[...]}</code> with all six row fields. No model is trained here.
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Target</th>
+                  <th>Threshold</th>
+                  <th>Observed coverage</th>
+                  <th>Mean width</th>
+                </tr>
+              </thead>
+              <tbody id="sweep"></tbody>
+            </table>
+          </div>
+        </details>
+        <div class="exports">
+          <button id="csv">Export evaluation intervals CSV</button
+          ><button id="report">Export audit JSON</button
+          ><button id="dataset">Save dataset JSON</button>
+        </div>
+      </section>
+      <footer>
+        <span>LOCAL DATA / NO TRAINING / NO UPLOADS</span
+        ><span>Finite-sample calibration. Visible limitations.</span>
+      </footer>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
